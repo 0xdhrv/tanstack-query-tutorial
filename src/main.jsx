@@ -5,6 +5,10 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import WithQuery from './pages/WithQuery.jsx';
 import WithoutQuery from './pages/WithoutQuery.jsx';
+import WithInfiniteQuery from './pages/WithInfiniteQuery.jsx';
+import Post from './pages/Post.jsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const router = createBrowserRouter([
   {
@@ -18,11 +22,31 @@ const router = createBrowserRouter([
   {
     path: '/withquery',
     element: <WithQuery />
+  },
+  {
+    path: '/withquery/:id',
+    element: <Post />
+  },
+  {
+    path: '/withinfinitequery',
+    element: <WithInfiniteQuery />
   }
 ]);
 
+const client = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retryDelay: 2000
+    }
+  }
+});
+
+
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <RouterProvider router={router}></RouterProvider>
-  </React.StrictMode>,
+  <QueryClientProvider client={client}>
+    <React.StrictMode>
+      <RouterProvider router={router}></RouterProvider>
+      <ReactQueryDevtools></ReactQueryDevtools>
+    </React.StrictMode>,
+  </QueryClientProvider>
 )
